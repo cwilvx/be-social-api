@@ -7,7 +7,7 @@ class TestConfig(Config):
     pass
 
 class DevConfig(Config):
-    SQLALCHEMY_DB_URI='postgresql+psycopg2://cwilv:iamcwilv@localhost/watchlist'
+    SQLALCHEMY_DB_URI='postgresql+psycopg2://cwilv:iamcwilv@localhost/social_app_0'
     Debug=True
 
 class ProdConfig(Config):
