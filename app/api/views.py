@@ -1,5 +1,5 @@
-from app import app
+from . import api
 
-@app.route('/')
+@api.route('/')
 def index():
     return {'message':'success!'}

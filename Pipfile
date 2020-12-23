@@ -7,6 +7,8 @@ name = "pypi"
 flask = "*"
 flask-restful = "*"
 gunicorn = "*"
+flask-script = "*"
+flask-migrate = "*"
 
 [dev-packages]
 
