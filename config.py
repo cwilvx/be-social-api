@@ -9,11 +9,15 @@ class TestConfig(Config):
     pass
 
 class DevConfig(Config):
-    SQLALCHEMY_DATABASE_URI='postgresql+psycopg2://cwilv:iamcwilv@localhost/social_app_0'
+    MONGO_URI="mongodb+srv://{user}:{pswd}@cluster0.vte2d.mongodb.net/<dbname>?retryWrites=true&w=majority".format(
+        user = os.environ.get('MONGO_USER'),
+        pswd = os.environ.get('MONGO_PSWD')
+    )
+
     DEBUG=True
 
 class ProdConfig(Config):
-    SQLALCHEMY_ALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URL')
+    pass
 
 config_options={
     'dev':DevConfig,
@@ -21,4 +25,4 @@ config_options={
     'test':TestConfig
 }
 
-MODE = os.environ.get('MODE')
+# MODE = os.environ.get('MODE')
