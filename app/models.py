@@ -8,8 +8,8 @@ class Mongo:
 
 class Posts(Mongo):
     def __init__(self):
-        super(Posts, self).__init__('POSTS')
-        self.db = self.mongo['ALL_POSTS']
+        super(Posts, self).__init__('be-social')
+        self.db = self.mongo['posts']
 
     def save(self, post_details):
         self.db.insert_one(post_details)
