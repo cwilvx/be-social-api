@@ -1,3 +1,8 @@
 #!/usr/bin/zsh
 
-python manage.py server
+export MODE="dev"
+export MONGO_USER="<user here>"
+export MONGO_PSWD="<password here>"
+export MONGO_DB="<your database here>"
+
+python manage.py

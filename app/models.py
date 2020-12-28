@@ -1,17 +1,19 @@
-from . import db
+import pymongo
 
-class Post(db.Model):
-    __tablename__ = "posts"
-    id = db.Column(db.Integer, primary_key=True)
-    post_id = db.Column(db.Integer)
-    post_owner = db.Column(db.String)
-    post_title = db.Column(db.String)
-    post_body = db.Column(db.String)
+mongo_uri = None
 
-    # @property
-    def __repr__(self):
-        return f'Post {self.post_title}'
+def configure_stuff(app):
+    global mongo_uri
+    mongo_uri = app.config['MONGO_URI']
 
-    # def publish_post(self):
-    #     db.session.add(self)
-    #     db.session.commit()
+class Mongo:
+    def __init__(self, database='be-social'):
+        self.mongo = pymongo.MongoClient(mongo_uri)[database]
+
+class Posts(Mongo):
+    def __init__(self):
+        super(Posts, self).__init__('be-social')
+        self.db = self.mongo['posts']
+
+    def save(self, post_details):
+        self.db.insert_one(post_details)

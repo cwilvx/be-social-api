@@ -1,15 +1,27 @@
-from flask import  request
-from app.models import Post
-from app import db
 from . import api
+from app.models import Posts
+from flask_restful import Resource, reqparse
+
+post_instance = Posts()
+post_parser = reqparse.RequestParser()
+post_parser.add_argument('post_body', help='This field cannot be blank!')
 
 @api.route('/')
 def index():
     return {'message':'success!'}
 
-@api.route('/post', methods=["GET", "POST"])
-def post():
-    if request.method == 'POST':
-        post_data = Post(post_id=request.post_id.data, post_owner=request.post_owner.data, post_title=request.post_title.data, post_body=request.post_body.data)
-        db.session.add(post_data)
-        db.session.commit()
+class AddNewPost(Resource):
+    def post(self):
+        data = post_parser.parse_args()
+
+        if data['post_body'] == '' or None:
+            return {'msg': 'post cannot be blank'}, 401
+
+        new_post_data = {
+            'post_body': data['post_body']
+        }
+        try:
+            post_instance.save(new_post_data)
+            return {'msg': 'Published!'}, 201
+        except:
+            return {'msg': 'Something went wrong'}, 500

@@ -9,6 +9,7 @@ flask-restful = "*"
 gunicorn = "*"
 flask-script = "*"
 flask-migrate = "*"
+dnspython = "*"
 
 [dev-packages]
 
