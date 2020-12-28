@@ -1,9 +1,13 @@
 import pymongo
-import app
+
+mongo_uri = None
+
+def configure_stuff(app):
+    global mongo_uri
+    mongo_uri = app.config['MONGO_URI']
 
 class Mongo:
-    def __int__(self, database='be-social'):
-        mongo_uri = app.config_options['MONGO_URI']
+    def __init__(self, database='be-social'):
         self.mongo = pymongo.MongoClient(mongo_uri)[database]
 
 class Posts(Mongo):

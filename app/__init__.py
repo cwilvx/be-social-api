@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restful import Api
 from config import config_options
+from . import api
 
 rest = Api()
 def create_app(config_name):
@@ -17,3 +18,5 @@ def create_app(config_name):
     app.register_blueprint(api_blueprint)
 
     return  app
+
+rest.add_resource(api.views.AddNewPost, '/posts/new')

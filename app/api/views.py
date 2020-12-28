@@ -1,11 +1,10 @@
 from . import api
-from app import rest
 from app.models import Posts
-from flask_restful import Resource, reqparse, Api
+from flask_restful import Resource, reqparse
 
 post_instance = Posts()
 post_parser = reqparse.RequestParser()
-# post_parser.add_argument('')
+post_parser.add_argument('post_body', help='This field cannot be blank!')
 
 @api.route('/')
 def index():
@@ -26,6 +25,3 @@ class AddNewPost(Resource):
             return {'msg': 'Published!'}, 201
         except:
             return {'msg': 'Something went wrong'}, 500
-
-
-rest.add_resource(AddNewPost, '/posts/new')
