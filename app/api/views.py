@@ -30,3 +30,9 @@ class AddNewPost(Resource):
             return {'msg': 'Published!'}, 201
         except:
             return {'msg': 'Something went wrong'}, 500
+
+class GetAllPosts(Resource):
+    def get(self):
+        all_posts = post_instance.get_all_posts()
+
+        return all_posts
