@@ -1,6 +1,5 @@
 alembic==1.4.3
 aniso8601==8.1.0
-be-social==0.0.0
 click==7.1.2
 dnspython==2.0.0
 Flask==1.1.2
