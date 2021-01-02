@@ -23,3 +23,6 @@ class Posts(Mongo):
             {'post_body': post_body}
         )
         return post
+    def get_all_posts(self):
+        posts = self.db.find()
+        return posts

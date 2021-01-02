@@ -1,4 +1,7 @@
 from . import api
+import json
+from flask import jsonify
+from bson import json_util
 from app.models import Posts
 from flask_restful import Resource, reqparse
 
@@ -30,3 +33,15 @@ class AddNewPost(Resource):
             return {'msg': 'Published!'}, 201
         except:
             return {'msg': 'Something went wrong'}, 500
+
+class AllPosts(Resource):
+    def get(self):
+        all_posts = []
+        posts = post_instance.get_all_posts()
+        for post in posts:
+            post_obj = json.dumps(post, default=json_util.default)
+            post_item = json.loads(post_obj)
+            all_posts.append(post_item)
+
+        return (all_posts)
+
