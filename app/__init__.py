@@ -19,4 +19,5 @@ def create_app(config_name):
 
     return  app
 
+rest.add_resource(api.views.AllPosts, '/posts')
 rest.add_resource(api.views.AddNewPost, '/posts/new')
