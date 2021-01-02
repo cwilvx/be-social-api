@@ -1,19 +1,17 @@
 import pymongo, os
 
-mongo_uri = None
-
-def configure_stuff(app):
-    global mongo_uri
-    mongo_uri = app.config['MONGO_URI']
-
 class Mongo:
-    def __init__(self, database='USERS'):
+    def __init__(self, database='app'):
+        mongo_uri = 'mongodb+srv://{user}:{pswd}@cluster0.vte2d.mongodb.net/?retryWrites=true&w=majority'.format(
+            user = os.environ.get('MONGO_USER'),
+            pswd = os.environ.get('MONGO_PSWD')
+        )
         self.db = pymongo.MongoClient(mongo_uri)[database]
 
 class Posts(Mongo):
     def __init__(self):
-        super(Posts, self).__init__('USERS')
-        self.db = self.db['ALL_POSTS']
+        super(Posts, self).__init__('ALL_POSTS')
+        self.db = self.db['POSTS']
 
     def save(self, post_details):
         self.db.insert_one(post_details)
