@@ -30,6 +30,7 @@ rest.add_resource(api.views.AllPosts, '/posts')
 rest.add_resource(api.views.AddNewPost, '/posts/new')
 rest.add_resource(auth.views.UserRegistration, '/api/register')
 rest.add_resource(auth.views.UserLogin, '/api/login')
+rest.add_resource(auth.views.TokenRefresh, '/api/token/refresh')
 
 @jwt.user_identity_loader
 def user_identity_lookup(user):

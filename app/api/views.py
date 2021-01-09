@@ -4,6 +4,7 @@ import json
 from bson import json_util
 from app.models import Posts
 from flask_restful import Resource, reqparse
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 post_instance = Posts()
 post_parser = reqparse.RequestParser()
@@ -14,8 +15,10 @@ def index():
     return {'msg':'success!'}
 
 class AddNewPost(Resource):
+    @jwt_required
     def post(self):
         data = post_parser.parse_args()
+        current_user = get_jwt_identity()
 
         if data['post_body'] == '' or None:
             return {'msg': 'blank post not allowed'}, 401
@@ -25,7 +28,8 @@ class AddNewPost(Resource):
             return {'msg': 'already exists'}
 
         new_post_data = {
-            'post_body': data['post_body']
+            'post_body': data['post_body'],
+            'user': current_user
         }
 
         try:
