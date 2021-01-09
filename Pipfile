@@ -20,6 +20,9 @@ Flask-RESTful = "==0.3.8"
 Mako = "==1.1.3"
 MarkupSafe = "==1.1.1"
 Werkzeug = "==1.0.1"
+flask-jwt-extended = "*"
+passlib = "*"
+flask-cors = "*"
 
 [dev-packages]
 

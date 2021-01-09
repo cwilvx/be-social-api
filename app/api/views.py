@@ -1,6 +1,6 @@
 from . import api
 import json
-from flask import jsonify
+
 from bson import json_util
 from app.models import Posts
 from flask_restful import Resource, reqparse
