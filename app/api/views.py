@@ -29,7 +29,7 @@ class AddNewPost(Resource):
 
         new_post_data = {
             'post_body': data['post_body'],
-            'user': current_user
+            'user': current_user['user_id']
         }
 
         try:
