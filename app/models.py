@@ -53,3 +53,9 @@ class Posts(Mongo):
     def get_all_posts(self):
         posts = self.db.find()
         return posts
+    
+    def delete_post(self, post_id):
+        post = self.db.find_one(
+            {'post_id': post_id}
+        )
+        self.db.delete_one(post)

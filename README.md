@@ -25,5 +25,6 @@ $ ./start.sh
 | /api/register | POST | `username: string`<br><br>`password: string` |       No      | `201 Created`                                                          |
 | /api/login    | POST | `username: string`<br><br>`password: string` |       No      | `200 OK`<br><br>`acccess_token: string`<br><br>`refresh_token: string` |
 | /posts        | GET  |                      N/A                     |       No      | A list of posts                                                        |
-| /posts/new    | POST |   Authorization<br><br>`post_body: string`   |      Yes      | `201 Created`                                                          |
+| /posts/new    | POST |   Authorization<br>`post_body: string`   |      Yes      | `201 Created`                                                          |
+| /posts/single | POST |   `post_id: string`     |      No       | `200 OK`    A single post object                                      |
 

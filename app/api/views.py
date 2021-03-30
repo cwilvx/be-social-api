@@ -47,17 +47,6 @@ class AddNewPost(Resource):
         except:
             return {'msg': 'Something went wrong'}, 500
 
-class SinglePost(Resource):
-    def post(self):
-        single_post = []
-        data = post_parser.parse_args()
-        posts = post_instance.get_post_by_id(data['post_id'])
-        
-        post_obj = json.dumps(posts, default=json_util.default)
-        post_item = json.loads(post_obj)
-        
-        return (post_item)
-
 class AllPosts(Resource):
     def get(self):
         all_posts = []
@@ -68,3 +57,21 @@ class AllPosts(Resource):
             all_posts.append(post_item)
 
         return (all_posts)
+
+class SinglePost(Resource):
+    def post(self):
+        data = post_parser.parse_args()
+        post = post_instance.get_post_by_id(data['post_id'])
+        
+        post_obj = json.dumps(post, default=json_util.default)
+        post_item = json.loads(post_obj)
+        
+        return (post_item)
+
+class DeletePost(Resource):
+    def post(self):
+        data = post_parser.parse_args()
+        post_instance.delete_post(data['post_id'])
+        
+        return {'msg': 'post deleted successfully'}, 410
+        
