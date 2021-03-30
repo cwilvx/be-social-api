@@ -1,6 +1,7 @@
 from . import api
 import json
 import random, string
+from flask import jsonify
 
 from bson import json_util
 from app.models import Posts
@@ -43,7 +44,9 @@ class AddNewPost(Resource):
 
         try:
             post_instance.save(new_post_data)
-            return {'msg': 'Published!'}, 201
+            post_data = json.loads(json.dumps(new_post_data, default=json_util.default))
+            return (post_data), 201
+        
         except:
             return {'msg': 'Something went wrong'}, 500
 
@@ -57,21 +60,40 @@ class AllPosts(Resource):
             all_posts.append(post_item)
 
         return (all_posts)
-
+    
 class SinglePost(Resource):
     def post(self):
         data = post_parser.parse_args()
-        post = post_instance.get_post_by_id(data['post_id'])
+        post_id = data['post_id']
         
-        post_obj = json.dumps(post, default=json_util.default)
-        post_item = json.loads(post_obj)
-        
-        return (post_item)
+        if post_id:
+            post = post_instance.get_post_by_id(post_id)
+            
+            if post == None:
+                return {"msg": "Post does not exist!"}, 404
+            else:
+                post_obj = json.dumps(post, default=json_util.default)
+                post_item = json.loads(post_obj)
+                return (post_item)
+        else:
+            return {"msg": "post_id is required!"}            
 
 class DeletePost(Resource):
     def post(self):
         data = post_parser.parse_args()
-        post_instance.delete_post(data['post_id'])
+        post_id = data['post_id']
+        try:
+            if post_id:
+                post = post_instance.get_post_by_id(post_id)
+                
+                if post == None:
+                    return {"msg": "Post does not exist"}, 404
+                    
+                else:
+                    post_instance.delete_post(post)
+                    return {'msg': 'Post deleted successfully'}, 410
+            else:
+                return {"msg": "post_id is required!"}
         
-        return {'msg': 'post deleted successfully'}, 410
-        
+        except:
+            return {"msg": "Something went wrong!"}, 500
