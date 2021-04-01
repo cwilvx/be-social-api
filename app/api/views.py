@@ -79,21 +79,41 @@ class SinglePost(Resource):
             return {"msg": "post_id is required!"}            
 
 class DeletePost(Resource):
+    @jwt_required
     def post(self):
+        
+        current_user = get_jwt_identity()
         data = post_parser.parse_args()
         post_id = data['post_id']
+        
         try:
             if post_id:
                 post = post_instance.get_post_by_id(post_id)
                 
+                
                 if post == None:
                     return {"msg": "Post does not exist"}, 404
-                    
                 else:
-                    post_instance.delete_post(post)
-                    return {'msg': 'Post deleted successfully'}, 410
+                    post_obj = json.dumps(post, default=json_util.default)
+                    post_item = json.loads(post_obj)
+                
+                    # print(current_user['user_id'])
+                    # print('/')
+                    # print(post_item['user'])
+                    
+                    if current_user['user_id'] == post['user']:
+                        post_instance.delete_post(post_id)
+                        return {'msg': 'Post deleted successfully'}, 410
+                    else:
+                        return {'msg': 'Permission denied'}, 403
             else:
                 return {"msg": "post_id is required!"}
-        
+            
         except:
             return {"msg": "Something went wrong!"}, 500
+ 
+class GetCurrentUser(Resource):
+    @jwt_required
+    def post(self):
+        current_user = get_jwt_identity()
+        return (current_user)
