@@ -9,6 +9,7 @@ from . import api, auth
 rest = Api()
 jwt = JWTManager()
 
+
 def create_app(config_name):
     app = Flask(__name__)
     app.config.from_object(config_options[config_name])
@@ -24,16 +25,18 @@ def create_app(config_name):
     from .api import api as api_blueprint
     app.register_blueprint(api_blueprint)
 
-    return  app
+    return app
+
 
 rest.add_resource(api.views.AllPosts, '/')
 rest.add_resource(api.views.AddNewPost, '/posts/new')
-rest.add_resource(auth.views.UserRegistration, '/auth/register')
+rest.add_resource(auth.views.UserRegistration, '/auth/signup')
 rest.add_resource(auth.views.UserLogin, '/auth/login')
 rest.add_resource(auth.views.TokenRefresh, '/auth/token/refresh')
 rest.add_resource(api.views.SinglePost, '/posts/single')
 rest.add_resource(api.views.DeletePost, '/posts/delete')
 rest.add_resource(auth.views.GetCurrentUser, '/auth/user')
+
 
 @jwt.user_identity_loader
 def user_identity_lookup(user):
