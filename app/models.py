@@ -3,10 +3,14 @@ from passlib.hash import pbkdf2_sha256 as sha256
 
 class Mongo:
     def __init__(self, database='app'):
-        mongo_uri = 'mongodb+srv://{user}:{pswd}@cluster0.vte2d.mongodb.net/?retryWrites=true&w=majority'.format(
-            user = os.environ.get('MONGO_USER'),
-            pswd = os.environ.get('MONGO_PSWD')
-        )
+        mode = os.environ.get('MODE')
+        if mode == "dev":
+            mongo_uri = 'mongodb://127.0.0.1:27017/'
+        else:
+            mongo_uri = 'mongodb+srv://{user}:{pswd}@cluster0.vte2d.mongodb.net/?retryWrites=true&w=majority'.format(
+                user = os.environ.get('MONGO_USER'),
+                pswd = os.environ.get('MONGO_PSWD')
+            )
         self.db = pymongo.MongoClient(mongo_uri)[database]
 
 class Users(Mongo):
