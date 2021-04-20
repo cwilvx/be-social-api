@@ -16,7 +16,7 @@ def create_app(config_name):
 
     rest.init_app(app)
     jwt.init_app(app)
-    cors = CORS(app, resources={r'/api/*': {'origins': '*'}})
+    cors = CORS(app, resources={r'/*': {'origins': '*'}})
 
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)
@@ -26,14 +26,14 @@ def create_app(config_name):
 
     return  app
 
-rest.add_resource(api.views.AllPosts, '/posts')
+rest.add_resource(api.views.AllPosts, '/')
 rest.add_resource(api.views.AddNewPost, '/posts/new')
-rest.add_resource(auth.views.UserRegistration, '/api/register')
-rest.add_resource(auth.views.UserLogin, '/api/login')
-rest.add_resource(auth.views.TokenRefresh, '/api/token/refresh')
+rest.add_resource(auth.views.UserRegistration, '/auth/register')
+rest.add_resource(auth.views.UserLogin, '/auth/login')
+rest.add_resource(auth.views.TokenRefresh, '/auth/token/refresh')
 rest.add_resource(api.views.SinglePost, '/posts/single')
 rest.add_resource(api.views.DeletePost, '/posts/delete')
-rest.add_resource(api.views.GetCurrentUser, '/user')
+rest.add_resource(auth.views.GetCurrentUser, '/auth/user')
 
 @jwt.user_identity_loader
 def user_identity_lookup(user):

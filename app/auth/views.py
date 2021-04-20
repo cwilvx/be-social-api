@@ -73,3 +73,9 @@ class UserLogin(Resource):
             }, 200
         else:
             return {'msg': 'Wrong credentials'}, 401
+
+class GetCurrentUser(Resource):
+    @jwt_required
+    def post(self):
+        current_user = get_jwt_identity()
+        return (current_user)
