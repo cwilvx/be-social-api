@@ -17,7 +17,6 @@ def create_app(config_name):
 
     rest.init_app(app)
     jwt.init_app(app)
-    cors = CORS(app, resources={r'/*': {'origins': '*'}})
 
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)
