@@ -105,18 +105,15 @@ class DeletePost(Resource):
 
                 if post is None:
                     return {"msg": "Post does not exist"}, 404
-                else:
-                    post_obj = json.dumps(post, default=json_util.default)
-                    post_item = json.loads(post_obj)
 
-                    if current_user['user_id'] == post['user']:
-                        try:
-                            post_instance.delete_post(post_id)
-                            return {'msg': 'Post deleted successfully'}, 410
-                        except:
-                            return {'msg': 'An exception occurred'}, 500
-                    else:
-                        return {'msg': 'Permission denied'}, 403
+                if current_user['user_id'] == post['user']:
+                    try:
+                        post_instance.delete_post(post_id)
+                        return {'msg': 'Post deleted successfully'}, 410
+                    except:
+                        return {'msg': 'An exception occurred'}, 500
+                else:
+                    return {'msg': 'Permission denied'}, 403
             else:
                 return {"msg": "post_id is required!"}
         except:
