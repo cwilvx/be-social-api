@@ -28,7 +28,8 @@ def index():
 
 class AddNewPost(Resource):
     @jwt_required
-    def post(self):
+    @staticmethod
+    def post():
         data = post_parser.parse_args()
         current_user = get_jwt_identity()
 
@@ -56,7 +57,8 @@ class AddNewPost(Resource):
 
 
 class AllPosts(Resource):
-    def get(self):
+    @staticmethod
+    def get():
         all_posts = []
         posts = post_instance.get_all_posts()
         for post in posts:
@@ -89,7 +91,8 @@ class SinglePost(Resource):
 
 class DeletePost(Resource):
     @jwt_required
-    def post(self):
+    @staticmethod
+    def post():
         """Deletes a post
 
         Returns:
