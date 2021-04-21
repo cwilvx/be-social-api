@@ -12,13 +12,12 @@ from . import api
 post_instance = Posts()
 post_parser = reqparse.RequestParser()
 post_parser.add_argument('post_body', help='This field cannot be blank!')
-post_parser.add_argument('post_id', help='This field cannot be blank')
+post_parser.add_argument('post_id')
+post_parser.add_argument('tags', action="append")
 
 
 def generate_post_id():
-    post_id = ''.join(random.choice(string.ascii_letters)
-                      for i in range(10)
-                      )
+    post_id = ''.join(random.choice(string.ascii_letters) for i in range(10))
     return post_id
 
 
@@ -36,13 +35,14 @@ class AddNewPost(Resource):
         if data['post_body'] == '' or None:
             return {'msg': 'blank post not allowed'}, 401
 
-        post_exists = post_instance.get_post_by_body(data['post_body'])
-        if post_exists:
-            return {'msg': 'already exists'}
+        # post_exists = post_instance.get_post_by_body(data['post_body'])
+        # if post_exists:
+        #     return {'msg': 'already exists'}
 
         new_post_data = {
             'post_body': data['post_body'],
             'user': current_user['user_id'],
+            'tags': data['tags'],
             'post_id': generate_post_id()
         }
 
@@ -56,8 +56,7 @@ class AddNewPost(Resource):
 
 
 class AllPosts(Resource):
-    @staticmethod
-    def get():
+    def get(self):
         all_posts = []
         posts = post_instance.get_all_posts()
         for post in posts:
