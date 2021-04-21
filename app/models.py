@@ -1,5 +1,7 @@
-import pymongo, os
+import os
+import pymongo
 from passlib.hash import pbkdf2_sha256 as sha256
+
 
 class Mongo:
     def __init__(self, database='app'):
@@ -8,10 +10,11 @@ class Mongo:
             mongo_uri = 'mongodb://127.0.0.1:27017/'
         else:
             mongo_uri = 'mongodb+srv://{user}:{pswd}@cluster0.vte2d.mongodb.net/?retryWrites=true&w=majority'.format(
-                user = os.environ.get('MONGO_USER'),
-                pswd = os.environ.get('MONGO_PSWD')
+                user=os.environ.get('MONGO_USER'),
+                pswd=os.environ.get('MONGO_PSWD')
             )
         self.db = pymongo.MongoClient(mongo_uri)[database]
+
 
 class Users(Mongo):
     def __init__(self):
@@ -22,7 +25,8 @@ class Users(Mongo):
     def generate_hash(password):
         return sha256.hash(password)
 
-    def verify_hash(self, password, hashed_password):
+    @staticmethod
+    def verify_hash(password, hashed_password):
         return sha256.verify(password, hashed_password)
 
     def save(self, user_details):
@@ -33,6 +37,7 @@ class Users(Mongo):
             {'username': username}
         )
         return user
+
 
 class Posts(Mongo):
     def __init__(self):
@@ -53,11 +58,11 @@ class Posts(Mongo):
             {'post_id': post_id}
         )
         return post
-    
+
     def get_all_posts(self):
         posts = self.db.find()
         return posts
-    
+
     def delete_post(self, post_id):
         post = self.db.find_one(
             {'post_id': post_id}

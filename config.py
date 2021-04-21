@@ -1,4 +1,6 @@
-import os, datetime
+import datetime
+import os
+
 
 class Config:
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
@@ -9,17 +11,21 @@ class Config:
     def init_app(app):
         pass
 
+
 class TestConfig(Config):
     pass
 
+
 class DevConfig(Config):
-    DEBUG=True
+    DEBUG = True
+
 
 class ProdConfig(Config):
     pass
 
-config_options={
-    'dev':DevConfig,
-    'prod':ProdConfig,
-    'test':TestConfig
+
+config_options = {
+    'dev': DevConfig,
+    'prod': ProdConfig,
+    'test': TestConfig
 }

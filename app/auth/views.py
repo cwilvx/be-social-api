@@ -1,12 +1,14 @@
 import datetime
+import json
 
+from bson import json_util
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
     jwt_required,
     jwt_refresh_token_required,
     get_jwt_identity,
-    
+
 )
 from app.models import Users
 from flask_restful import Resource, reqparse
@@ -17,6 +19,7 @@ user_parser = reqparse.RequestParser()
 user_parser.add_argument('username', help='This field is required', required=True)
 user_parser.add_argument('password', help='This field is required', required=True)
 
+
 class TokenRefresh(Resource):
     @jwt_refresh_token_required
     def post(self):
@@ -24,8 +27,10 @@ class TokenRefresh(Resource):
         access_token = create_refresh_token(identity=user)
         return {'access_token': access_token}, 200
 
+
 class UserRegistration(Resource):
-    def post(self):
+    @staticmethod
+    def post():
         data = user_parser.parse_args()
         username = data['username']
         password = data['password']
@@ -45,12 +50,15 @@ class UserRegistration(Resource):
 
         try:
             user_instance.save(new_user)
-            return {'msg': 'User {} was successfully created'.format(username)},201
+            user = json.loads(json.dumps(new_user, default=json_util.default))
+            return user, 201
         except:
             return {'msg': 'Something went wrong'}
 
+
 class UserLogin(Resource):
-    def post(self):
+    @staticmethod
+    def post():
         data = user_parser.parse_args()
         current_user = user_instance.get_user_by_username(data['username'])
 
@@ -67,15 +75,16 @@ class UserLogin(Resource):
             refresh_token = create_refresh_token(user)
 
             return {
-                'msg': 'Logged in as {}'.format(current_user['username']),
-                'access_token': access_token,
-                'refresh_token': refresh_token
-            }, 200
+                       'msg': 'Logged in as {}'.format(current_user['username']),
+                       'access_token': access_token,
+                       'refresh_token': refresh_token
+                   }, 200
         else:
             return {'msg': 'Wrong credentials'}, 401
+
 
 class GetCurrentUser(Resource):
     @jwt_required
     def post(self):
         current_user = get_jwt_identity()
-        return (current_user)
+        return current_user
