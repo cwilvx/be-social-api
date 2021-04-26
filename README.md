@@ -1,11 +1,13 @@
 # B-social backend
-(Work in progress) an educational social network for my campus. This repo hosts the Flask APIs serving the Be Social App
+
+(Work in progress) an educational social network for my campus. This repo hosts
+the Flask APIs serving the Be Social App
 
 ### Settting up locally
 
 ```bash
 # for ssh users
-$ git clone git@github.com:geoffrey45/be-social-be.git 
+$ git clone git@github.com:geoffrey45/be-social-be.git
 # for HTTPS users
 $ git clone https://github.com/geoffrey45/be-social-be.git
 $ cd be-social-be
@@ -18,14 +20,16 @@ $ ./start.sh
 ```
 
 ### The endpoints
+
 > For Authorization, the `access_token` is sent as a bearer token.
 
 | Endpoint      | Type |                  Parameters                  | Authorization | Returns                                                                |
-|---------------|------|:--------------------------------------------:|:-------------:|------------------------------------------------------------------------|
-| /auth/signup  | POST | `username: string`<br><br>`password: string` |       No      | `201 Created`                                                          |
-| /auth/login   | POST | `username: string`<br><br>`password: string` |       No      | `200 OK`<br><br>`acccess_token: string`<br><br>`refresh_token: string` |
-| /auth/user    | GET
-| /             | GET  |                      N/A                     |       No      | A list of posts                                                        |
-| /posts/new    | POST |   Authorization<br>`post_body: string`   |      Yes      | `201 Created`                                                          |
-| /posts/single | POST |   `post_id: string`     |      No       | `200 OK`    A single post object                                      |
+| ------------- | ---- | :------------------------------------------: | :-----------: | ---------------------------------------------------------------------- |
+| /auth/signup  | POST | `username: string`<br><br>`password: string` |      No       | `201 Created`                                                          |
+| /auth/login   | POST | `username: string`<br><br>`password: string` |      No       | `200 OK`<br><br>`acccess_token: string`<br><br>`refresh_token: string` |
+| /auth/user    | GET  |
+| /             | GET  |                     N/A                      |      No       | A list of posts                                                        |
+| /posts/new    | POST |     Authorization<br>`post_body: string`     |      Yes      | `201 Created`                                                          |
+| /posts/single | POST |              `post_id: string`               |      No       | `200 OK` A single post object                                          |
+
 | /

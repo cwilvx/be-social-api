@@ -3,24 +3,26 @@ import random
 import string
 
 from bson import json_util
-from flask_jwt_extended import get_jwt_identity, jwt_required
-from flask_restful import Resource, reqparse
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
+from flask_restful import reqparse
+from flask_restful import Resource
 
-from app.models import Posts
 from . import api
+from app.models import Posts
 
 post_instance = Posts()
 post_parser = reqparse.RequestParser()
-post_parser.add_argument('post_body', help='This field cannot be blank!')
-post_parser.add_argument('post_id')
-post_parser.add_argument('tags', action="append")
+post_parser.add_argument("post_body", help="This field cannot be blank!")
+post_parser.add_argument("post_id")
+post_parser.add_argument("tags", action="append")
 
-post_parser.add_argument('q', help="This field cannot be blank!")
+post_parser.add_argument("q", help="This field cannot be blank!")
 
 
-@api.route('/wp-admin')
+@api.route("/wp-admin")
 def index():
-    return {'msg': 'See no evil! 🙈'}
+    return {"msg": "See no evil! 🙈"}
 
 
 class AddNewPost(Resource):
@@ -29,26 +31,27 @@ class AddNewPost(Resource):
         data = post_parser.parse_args()
         current_user = get_jwt_identity()
 
-        if data['post_body'] == '' or None:
-            return {'msg': 'blank post not allowed'}, 401
+        if data["post_body"] == "" or None:
+            return {"msg": "blank post not allowed"}, 401
 
         # post_exists = post_instance.get_post_by_body(data['post_body'])
         # if post_exists:
         #     return {'msg': 'already exists'}
 
         new_post_data = {
-            'user': current_user['user_id'],
-            'post_body': data['post_body'],
-            'tags': data['tags']
+            "user": current_user["user_id"],
+            "post_body": data["post_body"],
+            "tags": data["tags"],
         }
 
         try:
             post_instance.save(new_post_data)
-            post_data = json.loads(json.dumps(new_post_data, default=json_util.default))
+            post_data = json.loads(
+                json.dumps(new_post_data, default=json_util.default))
 
             return post_data, 201
         except:
-            return {'msg': 'Something went wrong'}, 500
+            return {"msg": "Something went wrong"}, 500
 
 
 class AllPosts(Resource):
@@ -81,7 +84,7 @@ class SinglePost(Resource):
     @staticmethod
     def post():
         data = post_parser.parse_args()
-        post_id = data['post_id']
+        post_id = data["post_id"]
 
         if post_id:
             post = post_instance.get_post_by_id(post_id)
@@ -107,7 +110,7 @@ class DeletePost(Resource):
         """
         current_user = get_jwt_identity()
         data = post_parser.parse_args()
-        post_id = data['post_id']
+        post_id = data["post_id"]
 
         try:
             if post_id:
@@ -116,15 +119,15 @@ class DeletePost(Resource):
                 if post is None:
                     return {"msg": "Post does not exist"}, 404
 
-                if current_user['user_id'] == post['user']:
+                if current_user["user_id"] == post["user"]:
                     try:
                         post_instance.delete_post(post_id)
-                        return {'msg': 'Post deleted successfully'}, 410
+                        return {"msg": "Post deleted successfully"}, 410
                     except:
-                        return {'msg': 'An exception occurred'}, 500
+                        return {"msg": "An exception occurred"}, 500
                 else:
 
-                    return {'msg': 'Permission denied'}, 403
+                    return {"msg": "Permission denied"}, 403
             else:
                 return {"msg": "post_id is required!"}
         except:
@@ -135,7 +138,7 @@ class SearchPosts(Resource):
     @staticmethod
     def get():
         data = post_parser.parse_args()
-        query = data['q']
+        query = data["q"]
 
         query_results = []
         posts = post_instance.search_post_body(query)
@@ -145,4 +148,3 @@ class SearchPosts(Resource):
             query_results.append(post_item)
 
         return query_results
-      
