@@ -2,15 +2,12 @@ import datetime
 import json
 
 from bson import json_util
-from flask_jwt_extended import (
-    create_access_token,
-    create_refresh_token,
-    jwt_required,
-    jwt_refresh_token_required,
-    get_jwt_identity,
-)
-from app.models import Users
+from flask_jwt_extended import (create_access_token, create_refresh_token,
+                                get_jwt_identity, jwt_refresh_token_required,
+                                jwt_required)
 from flask_restful import Resource, reqparse
+
+from app.models import Users
 
 user_instance = Users()
 user_parser = reqparse.RequestParser()

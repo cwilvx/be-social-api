@@ -7,6 +7,7 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_restful import Resource, reqparse
 
 from app.models import Posts
+
 from . import api
 
 post_instance = Posts()
