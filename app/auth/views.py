@@ -22,7 +22,8 @@ user_parser.add_argument('password', help='This field is required', required=Tru
 
 class TokenRefresh(Resource):
     @jwt_refresh_token_required
-    def post(self):
+    @staticmethod
+    def post():
         user = get_jwt_identity()
         access_token = create_refresh_token(identity=user)
         return {'access_token': access_token}, 200
@@ -85,6 +86,7 @@ class UserLogin(Resource):
 
 class GetCurrentUser(Resource):
     @jwt_required
-    def post(self):
+    @staticmethod
+    def post():
         current_user = get_jwt_identity()
         return current_user
