@@ -71,11 +71,9 @@ class Posts(Mongo):
         )
         self.db.delete_one(post)
 
-
     def search_post_body(self, query):
-        
+
         self.db.create_index([('post_body', 'text')])
         posts = self.db.find({"$text": {"$search": query}})
-        
-        return posts
 
+        return posts

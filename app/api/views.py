@@ -44,7 +44,8 @@ class AddNewPost(Resource):
 
         try:
             post_instance.save(new_post_data)
-            post_data = json.loads(json.dumps(new_post_data, default=json_util.default))
+            post_data = json.loads(json.dumps(
+                new_post_data, default=json_util.default))
 
             return post_data, 201
         except:
@@ -145,4 +146,3 @@ class SearchPosts(Resource):
             query_results.append(post_item)
 
         return query_results
-      
