@@ -25,7 +25,8 @@ def index():
 
 class AddNewPost(Resource):
     @jwt_required
-    def post(self):
+    @staticmethod
+    def post():
         data = post_parser.parse_args()
         current_user = get_jwt_identity()
 
@@ -55,19 +56,7 @@ class AddNewPost(Resource):
 class AllPosts(Resource):
     # @staticmethod
     def get(self):
-        # data = post_parser.parse_args()
-        # query = data['query']
-        #
-        # query_results = []
-        # posts = post_instance.search_post_body(query)
-        #
-        # for post in posts:
-        #     post_obj = json.dumps(post, default=json_util.default)
-        #     post_item = json.loads(post_obj)
-        #     query_results.append(post_item)
-        #
-        # return query_results
-        # # else:
+
         all_posts = []
         posts = post_instance.get_all_posts()
         for post in posts:
