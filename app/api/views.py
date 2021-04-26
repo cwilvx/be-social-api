@@ -14,6 +14,7 @@ post_parser = reqparse.RequestParser()
 post_parser.add_argument('post_body', help='This field cannot be blank!')
 post_parser.add_argument('post_id')
 post_parser.add_argument('tags', action="append")
+
 post_parser.add_argument('q', help="This field cannot be blank!")
 
 
@@ -75,6 +76,7 @@ class AllPosts(Resource):
 
         return all_posts
 
+
 class SinglePost(Resource):
     @staticmethod
     def post():
@@ -121,6 +123,7 @@ class DeletePost(Resource):
                     except:
                         return {'msg': 'An exception occurred'}, 500
                 else:
+
                     return {'msg': 'Permission denied'}, 403
             else:
                 return {"msg": "post_id is required!"}
@@ -142,3 +145,4 @@ class SearchPosts(Resource):
             query_results.append(post_item)
 
         return query_results
+      

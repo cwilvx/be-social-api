@@ -38,6 +38,7 @@ rest.add_resource(auth.views.GetCurrentUser, '/auth/user')
 rest.add_resource(api.views.SearchPosts, '/posts/search')
 
 
+
 @jwt.user_identity_loader
 def user_identity_lookup(user):
     return user
