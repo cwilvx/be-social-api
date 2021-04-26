@@ -3,9 +3,9 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
 
+from . import api
+from . import auth
 from config import config_options
-
-from . import api, auth
 
 rest = Api()
 jwt = JWTManager()
