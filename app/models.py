@@ -59,7 +59,7 @@ class Posts(Mongo):
         return posts
 
     def delete_post(self, post_id):
-        post = self.db.find_one({"post_id": post_id})
+        post = self.db.find_one({"_id": ObjectId(post_id)})
         self.db.delete_one(post)
 
     def search_post_body(self, query):

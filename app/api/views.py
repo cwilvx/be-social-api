@@ -25,8 +25,8 @@ def index():
 
 class AddNewPost(Resource):
     @jwt_required
-    @staticmethod
-    def post():
+    # @staticmethod
+    def post(self):
         data = post_parser.parse_args()
         current_user = get_jwt_identity()
 
