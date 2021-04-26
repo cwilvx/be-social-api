@@ -1,6 +1,4 @@
 import json
-import random
-import string
 
 from bson import json_util
 from flask_jwt_extended import get_jwt_identity
