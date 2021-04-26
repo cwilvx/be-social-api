@@ -3,6 +3,7 @@ import json
 from bson import json_util
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
+from flask_jwt_extended.exceptions import NoAuthorizationError
 from flask_restful import reqparse
 from flask_restful import Resource
 
@@ -25,17 +26,16 @@ def index():
 
 class AddNewPost(Resource):
     @jwt_required
-    # @staticmethod
     def post(self):
         data = post_parser.parse_args()
-        current_user = get_jwt_identity()
+
+        try:
+            current_user = get_jwt_identity()
+        except NoAuthorizationError:
+            return {"msg": "Missing Authorization Headers"}
 
         if data["post_body"] == "" or None:
             return {"msg": "blank post not allowed"}, 401
-
-        # post_exists = post_instance.get_post_by_body(data['post_body'])
-        # if post_exists:
-        #     return {'msg': 'already exists'}
 
         new_post_data = {
             "user": current_user["user_id"],
