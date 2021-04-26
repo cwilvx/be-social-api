@@ -16,8 +16,10 @@ from flask_restful import Resource, reqparse
 user_instance = Users()
 user_parser = reqparse.RequestParser()
 
-user_parser.add_argument('username', help='This field is required', required=True)
-user_parser.add_argument('password', help='This field is required', required=True)
+user_parser.add_argument(
+    'username', help='This field is required', required=True)
+user_parser.add_argument(
+    'password', help='This field is required', required=True)
 
 
 class TokenRefresh(Resource):
@@ -75,10 +77,10 @@ class UserLogin(Resource):
             refresh_token = create_refresh_token(user)
 
             return {
-                       'msg': 'Logged in as {}'.format(current_user['username']),
+                'msg': 'Logged in as {}'.format(current_user['username']),
                        'access_token': access_token,
                        'refresh_token': refresh_token
-                   }, 200
+            }, 200
         else:
             return {'msg': 'Wrong credentials'}, 401
 
