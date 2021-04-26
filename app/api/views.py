@@ -11,15 +11,10 @@ from . import api
 
 post_instance = Posts()
 post_parser = reqparse.RequestParser()
-post_parser.add_argument('post_body', help='This field cannot be blank!', location="form")
-post_parser.add_argument('post_id', location="form")
-post_parser.add_argument('tags', action="append", location="form")
-post_parser.add_argument('query', type=string, location='args')
-
-
-def generate_post_id():
-    post_id = ''.join(random.choice(string.ascii_letters) for i in range(10))
-    return post_id
+post_parser.add_argument('post_body', help='This field cannot be blank!')
+post_parser.add_argument('post_id')
+post_parser.add_argument('tags', action="append")
+post_parser.add_argument('q', help="This field cannot be blank!")
 
 
 @api.route('/wp-admin')
@@ -41,10 +36,9 @@ class AddNewPost(Resource):
         #     return {'msg': 'already exists'}
 
         new_post_data = {
-            'post_body': data['post_body'],
             'user': current_user['user_id'],
-            'tags': data['tags'],
-            'post_id': generate_post_id()
+            'post_body': data['post_body'],
+            'tags': data['tags']
         }
 
         try:
@@ -59,27 +53,27 @@ class AddNewPost(Resource):
 class AllPosts(Resource):
     # @staticmethod
     def get(self):
-        data = post_parser.parse_args()
-        query = data['query']
-
-        query_results = []
-        posts = post_instance.search_post_body(query)
-
+        # data = post_parser.parse_args()
+        # query = data['query']
+        #
+        # query_results = []
+        # posts = post_instance.search_post_body(query)
+        #
+        # for post in posts:
+        #     post_obj = json.dumps(post, default=json_util.default)
+        #     post_item = json.loads(post_obj)
+        #     query_results.append(post_item)
+        #
+        # return query_results
+        # # else:
+        all_posts = []
+        posts = post_instance.get_all_posts()
         for post in posts:
             post_obj = json.dumps(post, default=json_util.default)
             post_item = json.loads(post_obj)
-            query_results.append(post_item)
+            all_posts.append(post_item)
 
-        return query_results
-        # else:
-        #     all_posts = []
-        #     posts = post_instance.get_all_posts()
-        #     for post in posts:
-        #         post_obj = json.dumps(post, default=json_util.default)
-        #         post_item = json.loads(post_obj)
-        #         all_posts.append(post_item)
-        #
-        #     return all_posts
+        return all_posts
 
 class SinglePost(Resource):
     @staticmethod
@@ -104,7 +98,7 @@ class SinglePost(Resource):
 class DeletePost(Resource):
     @jwt_required
     def post(self):
-        """Deletes a post
+        """Deletes a post.
 
         Returns:
             410 (status)
@@ -132,3 +126,19 @@ class DeletePost(Resource):
                 return {"msg": "post_id is required!"}
         except:
             return {"msg": "Something went wrong!"}, 500
+
+
+class SearchPosts(Resource):
+    @staticmethod
+    def get():
+        data = post_parser.parse_args()
+        query = data['q']
+
+        query_results = []
+        posts = post_instance.search_post_body(query)
+        for post in posts:
+            post_obj = json.dumps(post, default=json_util.default)
+            post_item = json.loads(post_obj)
+            query_results.append(post_item)
+
+        return query_results

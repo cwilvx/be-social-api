@@ -1,5 +1,6 @@
 import os
 import pymongo
+from bson import ObjectId
 from passlib.hash import pbkdf2_sha256 as sha256
 
 
@@ -55,7 +56,7 @@ class Posts(Mongo):
 
     def get_post_by_id(self, post_id):
         post = self.db.find_one(
-            {'post_id': post_id}
+            {'_id': ObjectId(post_id)}
         )
         return post
 
@@ -69,7 +70,9 @@ class Posts(Mongo):
         )
         self.db.delete_one(post)
 
-    def search_post_body(self, query, post_body):
-        self.db.createIndex({post_body: "text"})
+    def search_post_body(self, query):
+        
+        self.db.create_index([('post_body', 'text')])
         posts = self.db.find({"$text": {"$search": query}})
+        
         return posts

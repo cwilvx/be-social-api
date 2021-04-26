@@ -35,6 +35,7 @@ rest.add_resource(auth.views.TokenRefresh, '/auth/token/refresh')
 rest.add_resource(api.views.SinglePost, '/posts/single')
 rest.add_resource(api.views.DeletePost, '/posts/delete')
 rest.add_resource(auth.views.GetCurrentUser, '/auth/user')
+rest.add_resource(api.views.SearchPosts, '/posts/search')
 
 
 @jwt.user_identity_loader
