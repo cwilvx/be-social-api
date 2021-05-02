@@ -1,4 +1,5 @@
 import json
+import sys
 
 from bson import json_util
 from flask_jwt_extended import get_jwt_identity
@@ -29,12 +30,12 @@ class AddNewPost(Resource):
     def post(self):
         data = post_parser.parse_args()
 
-        try:
-            current_user = get_jwt_identity()
-        except NoAuthorizationError:
-            return {"msg": "Missing Authorization Headers"}
+        # try:
+        current_user = get_jwt_identity()
+        # except NoAuthorizationError:
+        #     return {"msg": "Missing Authorization Headers"}
 
-        if data["post_body"] == "" or None:
+        if data["post_body"] is None:
             return {"msg": "blank post not allowed"}, 401
 
         new_post_data = {
@@ -44,13 +45,14 @@ class AddNewPost(Resource):
         }
 
         try:
-            post_instance.save(new_post_data)
+            post_instance.insert_post(new_post_data)
             post_data = json.loads(
                 json.dumps(new_post_data, default=json_util.default))
 
             return post_data, 201
         except:
-            return {"msg": "Something went wrong"}, 500
+            e = sys.exc_info()[0]
+            return {"error": "{e}".format(e)}, 500
 
 
 class AllPosts(Resource):

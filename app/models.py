@@ -40,13 +40,20 @@ class Users(Mongo):
 
 class Posts(Mongo):
     def __init__(self):
+        """Initialize this class."""
         super(Posts, self).__init__("ALL_POSTS")
         self.db = self.db["POSTS"]
 
-    def save(self, post_details):
+    def insert_post(self, post_details):
+        """Insert a single post to the collection."""
         self.db.insert_one(post_details)
 
     def get_post_by_body(self, post_body):
+        """
+
+        :param post_body: string
+        :return: post: bson
+        """
         post = self.db.find_one({"post_body": post_body})
         return post
 
@@ -54,8 +61,12 @@ class Posts(Mongo):
         post = self.db.find_one({"_id": ObjectId(post_id)})
         return post
 
-    def get_all_posts(self):
-        posts = self.db.find()
+    def get_all_posts(self, last_id=None):
+        if last_id is None:
+            posts = self.db.find().limit(3)
+        else:
+            posts = self.db.find({'_id': {'$gt': last_id}}).limit(3)
+
         return posts
 
     def delete_post(self, post_id):
@@ -63,7 +74,6 @@ class Posts(Mongo):
         self.db.delete_one(post)
 
     def search_post_body(self, query):
-
         self.db.create_index([("post_body", "text")])
         posts = self.db.find({"$text": {"$search": query}})
 
