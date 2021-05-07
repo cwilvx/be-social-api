@@ -3,13 +3,14 @@ import sys
 
 from bson import json_util
 from flask import request
-from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
 from flask_jwt_extended.exceptions import NoAuthorizationError
-from flask_restful import Resource, reqparse
-
-from app.models import Posts
+from flask_restful import reqparse
+from flask_restful import Resource
 
 from . import api
+from app.models import Posts
 
 post_instance = Posts()
 post_parser = reqparse.RequestParser()
