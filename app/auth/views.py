@@ -15,8 +15,12 @@ from app.models import Users
 user_instance = Users()
 user_parser = reqparse.RequestParser()
 
-user_parser.add_argument("username", help="This field is required", required=True)
-user_parser.add_argument("password", help="This field is required", required=True)
+user_parser.add_argument("username",
+                         help="This field is required",
+                         required=True)
+user_parser.add_argument("password",
+                         help="This field is required",
+                         required=True)
 
 
 class TokenRefresh(Resource):
@@ -63,9 +67,12 @@ class UserLogin(Resource):
         current_user = user_instance.get_user_by_username(data["username"])
 
         if not current_user:
-            return {"msg": "User {} does not exist".format(data["username"])}, 401
+            return {
+                "msg": "User {} does not exist".format(data["username"])
+            }, 401
 
-        if user_instance.verify_hash(data["password"], current_user["password"]):
+        if user_instance.verify_hash(data["password"],
+                                     current_user["password"]):
             user = {
                 "username": current_user["username"],
                 "user_id": str(current_user["_id"]),
