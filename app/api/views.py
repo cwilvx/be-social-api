@@ -6,6 +6,7 @@ from bson import json_util
 from flask import request
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
+
 # from flask_jwt_extended.exceptions import NoAuthorizationError
 from flask_restful import reqparse
 from flask_restful import Resource
@@ -48,8 +49,7 @@ class AddNewPost(Resource):
 
         try:
             post_instance.insert_post(new_post_data)
-            post_data = json.loads(
-                json.dumps(new_post_data, default=json_util.default))
+            post_data = json.loads(json.dumps(new_post_data, default=json_util.default))
 
             return post_data, 201
         except:
