@@ -62,7 +62,7 @@ class AllPosts(Resource):
         last_id = request.args.get("last_id")
         limit = request.args.get("limit")
         if limit is None:
-            limit = 10
+            limit = 50
 
         posts = post_instance.get_all_posts(limit, last_id)
 
