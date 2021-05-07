@@ -1,6 +1,5 @@
 import json
 import sys
-from typing import Optional, Any
 
 from bson import json_util
 from flask import request
@@ -61,11 +60,11 @@ class AllPosts(Resource):
 
         all_posts = []
         last_id = request.args.get("last_id")
-        limit: int = request.args.get("limit")
-        print(limit)
+        limit = request.args.get("limit")
+        if limit is None:
+            limit = 50
 
         posts = post_instance.get_all_posts(limit, last_id)
-        # print(posts)
 
         for post in posts:
             # print(post)
