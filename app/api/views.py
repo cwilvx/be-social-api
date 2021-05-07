@@ -67,10 +67,13 @@ class AllPosts(Resource):
         posts = post_instance.get_all_posts(limit, last_id)
 
         for post in posts:
+            # print(post)
             post_obj = json.dumps(post, default=json_util.default)
             post_item = json.loads(post_obj)
+            # print(post_item)
             all_posts.append(post_item)
 
+        print(all_posts)
         return all_posts
 
 
