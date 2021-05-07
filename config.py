@@ -3,7 +3,7 @@ import os
 
 
 class Config:
-    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
+    JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
     JWT_EXPIRATION_DELTA = datetime.timedelta(days=10)
     JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(days=10)
 
@@ -24,8 +24,4 @@ class ProdConfig(Config):
     pass
 
 
-config_options = {
-    'dev': DevConfig,
-    'prod': ProdConfig,
-    'test': TestConfig
-}
+config_options = {"dev": DevConfig, "prod": ProdConfig, "test": TestConfig}
