@@ -6,7 +6,7 @@ from bson import json_util
 from flask import request
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
-# from flask_jwt_extended.exceptions import NoAuthorizationError
+from flask_jwt_extended.exceptions import NoAuthorizationError
 from flask_restful import reqparse
 from flask_restful import Resource
 
@@ -18,7 +18,6 @@ post_parser = reqparse.RequestParser()
 post_parser.add_argument("post_body", help="This field cannot be blank!")
 post_parser.add_argument("post_id")
 post_parser.add_argument("tags", action="append")
-# post_parser.add_argument("last_id", "The _id of the last id in thi page. For pagination", location="args")
 post_parser.add_argument("q", help="This field cannot be blank!")
 
 
@@ -32,10 +31,10 @@ class AddNewPost(Resource):
     def post(self):
         data = post_parser.parse_args()
 
-        # try:
-        current_user = get_jwt_identity()
-        # except NoAuthorizationError:
-        #     return {"msg": "Missing Authorization Headers"}
+        try:
+            current_user = get_jwt_identity()
+        except NoAuthorizationError:
+            return {"msg": "Missing Authorization Headers"}
 
         if data["post_body"] is None:
             return {"msg": "blank post not allowed"}, 401
@@ -58,7 +57,6 @@ class AddNewPost(Resource):
 
 
 class AllPosts(Resource):
-    @property
     def get(self):
 
         all_posts = []
@@ -67,18 +65,21 @@ class AllPosts(Resource):
         print(limit)
 
         posts = post_instance.get_all_posts(limit, last_id)
+        # print(posts)
 
         for post in posts:
+            # print(post)
             post_obj = json.dumps(post, default=json_util.default)
             post_item = json.loads(post_obj)
+            # print(post_item)
             all_posts.append(post_item)
 
+        print(all_posts)
         return all_posts
 
 
 class SinglePost(Resource):
-    @staticmethod
-    def post():
+    def post(self):
         data = post_parser.parse_args()
         post_id = data["post_id"]
 
@@ -131,7 +132,6 @@ class DeletePost(Resource):
 
 
 class SearchPosts(Resource):
-    @staticmethod
     def get():
         data = post_parser.parse_args()
         query = data["q"]

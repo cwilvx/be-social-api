@@ -53,11 +53,11 @@ class Posts(Mongo):
 
         return post
 
-    def get_all_posts(self, limix=None, last_id=None):
+    def get_all_posts(self, limit, last_id=None):
         if last_id is None:
-            posts = self.db.find().limit(limix)
+            posts = self.db.find().limit(int(limit))
         else:
-            posts = self.db.find({'_id': {'$gt': ObjectId(last_id)}}).limit(limix)
+            posts = self.db.find({'_id': {'$gt': ObjectId(last_id)}}).limit(int(limit))
 
         return posts
 
