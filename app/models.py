@@ -12,8 +12,8 @@ class Mongo:
             mongo_uri = "mongodb://127.0.0.1:27017/"
         else:
             mongo_uri = "mongodb+srv://{user}:{pswd}@cluster0.vte2d.mongodb.net/?retryWrites=true&w=majority".format(
-                user=os.environ.get("MONGO_USER"), pswd=os.environ.get("MONGO_PSWD")
-            )
+                user=os.environ.get("MONGO_USER"),
+                pswd=os.environ.get("MONGO_PSWD"))
         self.db = pymongo.MongoClient(mongo_uri)[database]
 
 
@@ -57,7 +57,11 @@ class Posts(Mongo):
         if last_id is None:
             posts = self.db.find().limit(int(limit))
         else:
-            posts = self.db.find({"_id": {"$gt": ObjectId(last_id)}}).limit(int(limit))
+            posts = self.db.find({
+                "_id": {
+                    "$gt": ObjectId(last_id)
+                }
+            }).limit(int(limit))
 
         return posts
 
