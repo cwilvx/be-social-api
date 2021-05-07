@@ -1,5 +1,4 @@
+from . import views, errors
 from flask import Blueprint
 
 auth = Blueprint('auth', __name__)
-
-from . import views, errors
