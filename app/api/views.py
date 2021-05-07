@@ -1,10 +1,12 @@
 import json
 import sys
+from typing import Optional, Any
 
 from bson import json_util
+from flask import request
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
-from flask_jwt_extended.exceptions import NoAuthorizationError
+# from flask_jwt_extended.exceptions import NoAuthorizationError
 from flask_restful import reqparse
 from flask_restful import Resource
 
@@ -16,7 +18,7 @@ post_parser = reqparse.RequestParser()
 post_parser.add_argument("post_body", help="This field cannot be blank!")
 post_parser.add_argument("post_id")
 post_parser.add_argument("tags", action="append")
-
+# post_parser.add_argument("last_id", "The _id of the last id in thi page. For pagination", location="args")
 post_parser.add_argument("q", help="This field cannot be blank!")
 
 
@@ -56,11 +58,16 @@ class AddNewPost(Resource):
 
 
 class AllPosts(Resource):
-    # @staticmethod
+    @property
     def get(self):
 
         all_posts = []
-        posts = post_instance.get_all_posts()
+        last_id = request.args.get("last_id")
+        limit: int = request.args.get("limit")
+        print(limit)
+
+        posts = post_instance.get_all_posts(limit, last_id)
+
         for post in posts:
             post_obj = json.dumps(post, default=json_util.default)
             post_item = json.loads(post_obj)

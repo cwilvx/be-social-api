@@ -48,24 +48,16 @@ class Posts(Mongo):
         """Insert a single post to the collection."""
         self.db.insert_one(post_details)
 
-    def get_post_by_body(self, post_body):
-        """
-
-        :param post_body: string
-        :return: post: bson
-        """
-        post = self.db.find_one({"post_body": post_body})
-        return post
-
     def get_post_by_id(self, post_id):
         post = self.db.find_one({"_id": ObjectId(post_id)})
+
         return post
 
-    def get_all_posts(self, last_id=None):
+    def get_all_posts(self, limix=None, last_id=None):
         if last_id is None:
-            posts = self.db.find().limit(3)
+            posts = self.db.find().limit(limix)
         else:
-            posts = self.db.find({'_id': {'$gt': last_id}}).limit(3)
+            posts = self.db.find({'_id': {'$gt': ObjectId(last_id)}}).limit(limix)
 
         return posts
 
