@@ -57,7 +57,8 @@ class Posts(Mongo):
         if last_id is None:
             posts = self.db.find().limit(limix)
         else:
-            posts = self.db.find({'_id': {'$gt': ObjectId(last_id)}}).limit(limix)
+            posts = self.db.find(
+                {'_id': {'$gt': ObjectId(last_id)}}).limit(limix)
 
         return posts
 
