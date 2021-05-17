@@ -14,6 +14,8 @@ from app.models import Posts
 
 post_instance = Posts()
 post_parser = reqparse.RequestParser()
+
+# define request fields
 post_parser.add_argument("post_body", help="This field cannot be blank!")
 post_parser.add_argument("post_id")
 post_parser.add_argument("tags", action="append")

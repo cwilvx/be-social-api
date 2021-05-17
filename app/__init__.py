@@ -11,8 +11,11 @@ rest = Api()
 jwt = JWTManager()
 
 
+# the application factory
 def create_app(config_name):
+    # initialize app instance
     app = Flask(__name__)
+    # cors headers for remote access
     CORS(app)
     app.config.from_object(config_options[config_name])
     config_options[config_name].init_app(app)
@@ -20,15 +23,18 @@ def create_app(config_name):
     rest.init_app(app)
     jwt.init_app(app)
 
+    # register ./auth module
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)
 
+    # register ./api module
     from .api import api as api_blueprint
     app.register_blueprint(api_blueprint)
 
     return app
 
 
+# mapping the endpoints
 rest.add_resource(api.views.AllPosts, "/")
 rest.add_resource(api.views.AddNewPost, "/posts/new")
 rest.add_resource(auth.views.UserRegistration, "/auth/signup")
