@@ -15,40 +15,55 @@ from flask_restful import Resource, reqparse
 
 user_instance = Users()
 user_parser = reqparse.RequestParser()
-
+# request arguments
 user_parser.add_argument('username', help='This field is required', required=True)
 user_parser.add_argument('password', help='This field is required', required=True)
 
 
 class TokenRefresh(Resource):
+    """Generates a new access token."""
     @jwt_refresh_token_required
     @staticmethod
     def post():
+        """
+        Generates a new access token in exchange for a refresh token.
+
+        :return: access_token: The json containing the access token and another refresh token.
+        :rtype: json
+        """
         user = get_jwt_identity()
         access_token = create_refresh_token(identity=user)
         return {'access_token': access_token}, 200
 
 
 class UserRegistration(Resource):
+    """Add a new document to the database."""
     @staticmethod
     def post():
+        """
+        Parses the request and gets the user details, then sends to the database.
+
+        :return: user: A json string containing the user details.
+        :rtype: json
+        """
+        # get username and password from request
         data = user_parser.parse_args()
         username = data['username']
         password = data['password']
 
-        if data['username'] == '' or None:
-            return {'msg': 'username is required'}, 401
-
-        current_user = user_instance.get_user_by_username(username)
-        if current_user:
+        # disable duplicate username
+        username_exists = user_instance.get_user_by_username(username)
+        if username_exists:
             return {'msg': 'username {} already exists'.format(username)}, 401
 
+        # define document schema
         new_user = {
             'username': username,
             'password': user_instance.generate_hash(password),
             'joined_at': datetime.datetime.now()
         }
 
+        # save the user
         try:
             user_instance.save(new_user)
             user = json.loads(json.dumps(new_user, default=json_util.default))
@@ -58,6 +73,7 @@ class UserRegistration(Resource):
 
 
 class UserLogin(Resource):
+
     @staticmethod
     def post():
         data = user_parser.parse_args()
