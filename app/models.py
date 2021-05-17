@@ -6,7 +6,7 @@ from passlib.hash import pbkdf2_sha256 as sha256
 
 
 class Mongo:
-    """Establishes a connection to the MongoDB instance."""
+    """Establishes a connection to a MongoDB instance."""
     def __init__(self, database):
         """
         Establishes a connection to MongoDB.
@@ -63,7 +63,7 @@ class Users(Mongo):
         """
         Inserts a single document to the database.
 
-        :param user_details: The JSON sent from api/views.py/AddNewPost()
+        :param user_details: The JSON sent from auth/views/UserRegistration()
         :type user_details: str
         """
         self.db.insert_one(user_details)
@@ -82,33 +82,75 @@ class Users(Mongo):
 
 
 class Posts(Mongo):
+    """Contains all the methods related with posts management."""
     def __init__(self):
-        """Initialize this class."""
+        """Connects to a database, creates one if it does not exist."""
         super(Posts, self).__init__("ALL_POSTS")
         self.db = self.db["POSTS"]
 
     def insert_post(self, post_details):
-        """Insert a single post to the collection."""
+        """
+        Inserts a single document sent from api/views/AddNewPost() in the database.
+
+        :param post_details: JSON sent from the view.
+        :type post_details: JSON
+        """
         self.db.insert_one(post_details)
 
     def get_post_by_id(self, post_id):
+        """
+        Returns a single document matching the passed id.
+
+        :param post_id: The MongoDB _oid of the document to retrieve.
+        :type post_id: str
+        :return: post: The cursor to the document matching the query.
+        :rtype: cursor
+        """
         post = self.db.find_one({"_id": ObjectId(post_id)})
 
         return post
 
     def get_all_posts(self, limit, last_id=None):
+        """
+        Returns all the posts in the database, based on the limit and the last_id.
+
+        :param limit: The number of documents to retrieve.
+        :type limit: num
+        :param last_id: The MongoDB _oid of the last document in the previous page, for paging purposes.
+        :type last_id: str
+        :return: posts: The MongoDb cursor to the documents.
+        :rtype: cursor
+        """
+
+        # check whether it's first page
         if last_id is None:
             posts = self.db.find().limit(int(limit))
         else:
+            # get all posts greater than the _oid
             posts = self.db.find({'_id': {'$gt': ObjectId(last_id)}}).limit(int(limit))
 
         return posts
 
     def delete_post(self, post_id):
+        """
+        Deletes a single document matching the MongoDb _oid provided.
+
+        :param post_id: The MongoDb _oid sent from the request.
+        :type post_id: str
+        """
         post = self.db.find_one({"_id": ObjectId(post_id)})
         self.db.delete_one(post)
 
     def search_post_body(self, query):
+        """
+        Returns a list of documents matching the search query.
+
+        :param query: The string to search for in the database.
+        :type query: str
+        :return: posts: A cursor to the documents.
+        :rtype: cursor
+        """
+        # create the index
         self.db.create_index([("post_body", "text")])
         posts = self.db.find({"$text": {"$search": query}})
 
