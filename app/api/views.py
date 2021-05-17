@@ -24,6 +24,7 @@ post_parser.add_argument("q", help="This field cannot be blank!")
 
 @api.route("/wp-admin")
 def index():
+    """Returns a simple json string."""
     return {"msg": "See no evil! 🙈"}
 
 
@@ -33,9 +34,10 @@ class AddNewPost(Resource):
     @jwt_required
     def post(self):
         """
-        Parses a request and add a document to the database.
+        Parses a request and add a single document to the database.
 
-        :returns: post_data (JSON): The document added to the database.
+        :returns: post_data: The document added to the database.
+        :rtype: json
         """
         data = post_parser.parse_args()
 
@@ -69,8 +71,7 @@ class AddNewPost(Resource):
 
 
 class AllPosts(Resource):
-    """Gets all the documents in the database."""
-
+    """Returns the specified number of documents."""
     def get(self):
         """
         Gets all the posts in the database based on the last_id and the limit.
@@ -78,7 +79,8 @@ class AllPosts(Resource):
         query-parameters :
             last_id (mongodb pointer): A pointer to the last document in the previous page.
             limit (int): The number of documents to retrieve. Default = 50.
-        :returns: all_posts (json) : A list of all the documents matching the query parameters.
+        :returns: all_posts: A list of all the documents matching the query parameters.
+        :rtype: da
         """
 
         all_posts = []
@@ -88,8 +90,7 @@ class AllPosts(Resource):
             limit = 50
 
         posts = post_instance.get_all_posts(limit, last_id)
-
-        # convert the document pointers to JSON.
+        # convert the document cursor to JSON.
         for post in posts:
             post_obj = json.dumps(post, default=json_util.default)
             post_item = json.loads(post_obj)
@@ -104,10 +105,11 @@ class SinglePost(Resource):
         """
         Returns a single document matching that id.
 
-        query-parameters:
-            post_id (mongodb pointer): An single document id.
+        query-parameters post_id: An single document id.
+        :type: post_id: str
 
-        :return: post_item (json): A document matching the provided id.
+        :return: post_item: A document matching the provided id.
+        :rtype: json
         """
 
         data = post_parser.parse_args()
@@ -130,13 +132,11 @@ class SinglePost(Resource):
 
 
 class DeletePost(Resource):
-    """Deletes a document matching provided id."""
+    """Deletes a document matching provided _oid."""
     @jwt_required
     def post(self):
         """Deletes a single document matching the provided id.
-        query-parameters: post_id (mongodb pointer): The id of the document to be deleted.
-
-        :returns: A HTTP status code indicating the status of the request.
+        query-parameters: str post_id: The id of the document to be deleted.
         """
 
         current_user = get_jwt_identity()
@@ -169,14 +169,15 @@ class DeletePost(Resource):
 
 
 class SearchPosts(Resource):
-    """Retrieves documents that contain the search query."""
+    """Returns all the documents that contain the search query."""
     def get(self):
         """
         Retrieves all documents that contain the search query.
 
-        query-parameters: q (str): The string to search for.
+        query-parameters: str q: The string to search for.
 
-        :return: query_results (JSON): A list of all the documents that contain the search query.
+        :return: query_results: A list of all the documents that contain the search query.
+        :rtype query_results: json
         """
         data = post_parser.parse_args()
         query = data["q"]

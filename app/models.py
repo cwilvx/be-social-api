@@ -11,7 +11,8 @@ class Mongo:
         """
         Establishes a connection to MongoDB.
 
-        :param str database: the name of the collection to connect to.
+        :param database: the name of the collection to connect to.
+        :type database: str
         """
         mode = os.environ.get("MODE")
         # set mode="dev" for local development, mode="prod" for deployment.
