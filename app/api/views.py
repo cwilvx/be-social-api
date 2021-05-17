@@ -26,24 +26,35 @@ def index():
 
 
 class AddNewPost(Resource):
+    """Adds a new document to the database."""
+
     @jwt_required
     def post(self):
+        """
+        Parses a request and add a document to the database.
+
+        :returns: post_data (JSON): The document added to the database.
+        """
         data = post_parser.parse_args()
 
+        # check for JWT token
         try:
             current_user = get_jwt_identity()
         except NoAuthorizationError:
             return {"msg": "Missing Authorization Headers"}
 
+        # check for empty request body
         if data["post_body"] is None:
             return {"msg": "blank post not allowed"}, 401
 
+        # define document schema
         new_post_data = {
             "user": current_user["user_id"],
             "post_body": data["post_body"],
             "tags": data["tags"],
         }
 
+        # send the document to the database, then return it as response
         try:
             post_instance.insert_post(new_post_data)
             post_data = json.loads(
@@ -56,7 +67,17 @@ class AddNewPost(Resource):
 
 
 class AllPosts(Resource):
+    """Gets all the documents in the database."""
+
     def get(self):
+        """
+        Gets all the posts in the database based on the last_id and the limit.
+
+        query-parameters :
+            last_id (mongodb pointer): A pointer to the last document in the previous page.
+            limit (int): The number of documents to retrieve. Default = 50.
+        :returns: all_posts (json) : A list of all the documents matching the query parameters.
+        """
 
         all_posts = []
         last_id = request.args.get("last_id")
@@ -66,6 +87,7 @@ class AllPosts(Resource):
 
         posts = post_instance.get_all_posts(limit, last_id)
 
+        # convert the document pointers to JSON.
         for post in posts:
             post_obj = json.dumps(post, default=json_util.default)
             post_item = json.loads(post_obj)
@@ -75,16 +97,27 @@ class AllPosts(Resource):
 
 
 class SinglePost(Resource):
+    """Gets a single document matching a specific id."""
     def post(self):
+        """
+        Returns a single document matching that id.
+
+        query-parameters:
+            post_id (mongodb pointer): An single document id.
+
+        :return: post_item (json): A document matching the provided id.
+        """
         data = post_parser.parse_args()
         post_id = data["post_id"]
 
+        # check for empty request
         if post_id:
             post = post_instance.get_post_by_id(post_id)
 
             if post is None:
                 return {"msg": "Post does not exist!"}, 404
             else:
+                # convert post pointer to JSON
                 post_obj = json.dumps(post, default=json_util.default)
                 post_item = json.loads(post_obj)
 

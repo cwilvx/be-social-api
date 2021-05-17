@@ -1,9 +1,7 @@
 # B-social backend
+This is a social media backend API built using Flask, Flask Restful and PyMongo.
 
-(Work in progress) an educational social network for my campus. This repo hosts
-the Flask APIs serving the Be Social App
-
-### Settting up locally
+### Setting up locally
 
 ```bash
 # for ssh users
@@ -18,18 +16,3 @@ $ chmod a+x start.sh
 # rename start.sh.example to start.sh and edit the configs
 $ ./start.sh
 ```
-
-### The endpoints
-
-> For Authorization, the `access_token` is sent as a bearer token.
-
-| Endpoint      | Type |                  Parameters                  | Authorization | Returns                                                                |
-| ------------- | ---- | :------------------------------------------: | :-----------: | ---------------------------------------------------------------------- |
-| /auth/signup  | POST | `username: string`<br><br>`password: string` |      No       | `201 Created`                                                          |
-| /auth/login   | POST | `username: string`<br><br>`password: string` |      No       | `200 OK`<br><br>`acccess_token: string`<br><br>`refresh_token: string` |
-| /auth/user    | GET  |
-| /             | GET  |                     N/A                      |      No       | A list of posts                                                        |
-| /posts/new    | POST |     Authorization<br>`post_body: string`     |      Yes      | `201 Created`                                                          |
-| /posts/single | POST |              `post_id: string`               |      No       | `200 OK` A single post object                                          |
-
-| /
