@@ -6,12 +6,12 @@ from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
     jwt_required,
-    jwt_refresh_token_required,
     get_jwt_identity,
 
 )
-from app.models import Users
 from flask_restful import Resource, reqparse
+
+from app.models import Users
 
 user_instance = Users()
 user_parser = reqparse.RequestParser()
@@ -22,7 +22,6 @@ user_parser.add_argument('password', help='This field is required', required=Tru
 
 class TokenRefresh(Resource):
     """Generates a new access token."""
-    @jwt_refresh_token_required
     @staticmethod
     def post():
         """
@@ -73,26 +72,38 @@ class UserRegistration(Resource):
 
 
 class UserLogin(Resource):
-
+    """Generate an access token for a user upon password confirmation."""
     @staticmethod
     def post():
-        data = user_parser.parse_args()
-        current_user = user_instance.get_user_by_username(data['username'])
+        """
+        Takes in a raw password, verifies it against it's hash and generates and returns an access_token upon success.
 
-        if not current_user:
+        :return: access_token: A json string containing the access_token and a companion refresh token.
+        :rtype: str
+        """
+        # get the username from the request.
+        data = user_parser.parse_args()
+        username = user_instance.get_user_by_username(data['username'])
+
+        # check whether user exists in db
+        if not username:
             return {'msg': 'User {} does not exist'.format(data['username'])}, 401
 
-        if user_instance.verify_hash(data['password'], current_user['password']):
+        # verify the password
+        if user_instance.verify_hash(data['password'], username['password']):
+            # format the username and user_id
             user = {
-                'username': current_user['username'],
-                'user_id': str(current_user['_id'])
+                'username': username['username'],
+                'user_id': str(username['_id'])
             }
 
+            # generate access and refresh token
             access_token = create_access_token(user)
             refresh_token = create_refresh_token(user)
 
+            # format and return the above
             return {
-                       'msg': 'Logged in as {}'.format(current_user['username']),
+                       'msg': 'Logged in as {}'.format(username['username']),
                        'access_token': access_token,
                        'refresh_token': refresh_token
                    }, 200
@@ -101,8 +112,13 @@ class UserLogin(Resource):
 
 
 class GetCurrentUser(Resource):
+    """Gets the current user identity from a JWT access token"""
     @jwt_required
-    @staticmethod
-    def post():
+    def post(self):
+        """
+        Performs magic to a JWT access token using get_jwt_identity() and returns the user details.
+        :return:
+        :rtype:
+        """
         current_user = get_jwt_identity()
         return current_user
