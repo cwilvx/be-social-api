@@ -107,6 +107,7 @@ class SinglePost(Resource):
 
         :return: post_item (json): A document matching the provided id.
         """
+
         data = post_parser.parse_args()
         post_id = data["post_id"]
 
@@ -127,24 +128,29 @@ class SinglePost(Resource):
 
 
 class DeletePost(Resource):
+    """Deletes a document matching provided id."""
     @jwt_required
     def post(self):
-        """Deletes a post.
+        """Deletes a single document matching the provided id.
+        query-parameters: post_id (mongodb pointer): The id of the document to be deleted.
 
-        Returns:
-            410 (status)
+        :returns: A HTTP status code indicating the status of the request.
         """
+
         current_user = get_jwt_identity()
         data = post_parser.parse_args()
         post_id = data["post_id"]
 
         try:
+            # check for empty request
             if post_id:
                 post = post_instance.get_post_by_id(post_id)
 
+                # check for non-existent post
                 if post is None:
                     return {"msg": "Post does not exist"}, 404
 
+                # allow only deleting own posts
                 if current_user["user_id"] == post["user"]:
                     try:
                         post_instance.delete_post(post_id)
@@ -161,7 +167,15 @@ class DeletePost(Resource):
 
 
 class SearchPosts(Resource):
+    """Retrieves documents that contain the search query."""
     def get(self):
+        """
+        Retrieves all documents that contain the search query.
+
+        query-parameters: q (str): The string to search for.
+
+        :return: query_results (JSON): A list of all the documents that contain the search query.
+        """
         data = post_parser.parse_args()
         query = data["q"]
 
