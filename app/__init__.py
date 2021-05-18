@@ -48,6 +48,7 @@ rest.add_resource(api.views.SinglePost, "/posts/single")
 rest.add_resource(api.views.DeletePost, "/posts/delete")
 rest.add_resource(api.views.SearchPosts, "/posts/search")
 
+
 @jwt.user_identity_loader
 def user_identity_lookup(user):
     return user
