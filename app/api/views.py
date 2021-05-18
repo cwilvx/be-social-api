@@ -6,18 +6,17 @@ from flask import request
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended.exceptions import NoAuthorizationError
-from flask_restful import reqparse
 from flask_restful import Resource
+from flask_restful import reqparse
 
-from . import api
 from app.models import Posts
+from . import api
 
 post_instance = Posts()
 post_parser = reqparse.RequestParser()
 
 # define request fields
 post_parser.add_argument("post_body", help="This field cannot be blank!")
-post_parser.add_argument("post_id")
 post_parser.add_argument("tags", action="append")
 post_parser.add_argument("q", help="This field cannot be blank!")
 
@@ -101,7 +100,7 @@ class AllPosts(Resource):
 
 class SinglePost(Resource):
     """Gets a single document matching a specific id."""
-    def post(self):
+    def get(self):
         """
         Returns a single document matching that id.
 
@@ -112,8 +111,7 @@ class SinglePost(Resource):
         :rtype: json
         """
 
-        data = post_parser.parse_args()
-        post_id = data["post_id"]
+        post_id = request.args.get("post_id")
 
         # check for empty request
         if post_id:
