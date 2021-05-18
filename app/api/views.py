@@ -69,11 +69,13 @@ class AddNewPost(Resource):
             return {"error": "{e}".format(e)}, 500
 
 
-class AllPosts(Resource):
+class GetPosts(Resource):
     """Returns the specified number of documents."""
+
     def get(self):
         """
         Gets all the posts in the database based on the last_id and the limit.
+        Also gets a single post if a post_id is passed.
 
         query-parameters :
             last_id (mongodb pointer): A pointer to the last document in the previous page.
@@ -81,39 +83,7 @@ class AllPosts(Resource):
         :returns: all_posts: A list of all the documents matching the query parameters.
         :rtype: da
         """
-
-        all_posts = []
-        last_id = request.args.get("last_id")
-        limit = request.args.get("limit")
-        if limit is None:
-            limit = 50
-
-        posts = post_instance.get_all_posts(limit, last_id)
-        # convert the document cursor to JSON.
-        for post in posts:
-            post_obj = json.dumps(post, default=json_util.default)
-            post_item = json.loads(post_obj)
-            all_posts.append(post_item)
-
-        return all_posts
-
-
-class SinglePost(Resource):
-    """Gets a single document matching a specific id."""
-    def get(self):
-        """
-        Returns a single document matching that id.
-
-        query-parameters post_id: An single document id.
-        :type: post_id: str
-
-        :return: post_item: A document matching the provided id.
-        :rtype: json
-        """
-
         post_id = request.args.get("post_id")
-
-        # check for empty request
         if post_id:
             post = post_instance.get_post_by_id(post_id)
 
@@ -126,10 +96,25 @@ class SinglePost(Resource):
 
                 return post_item
         else:
-            return {"msg": "post_id is required!"}
+            all_posts = []
+
+            last_id = request.args.get("last_id")
+            limit = request.args.get("limit")
+
+            if limit is None:
+                limit = 50
+
+            posts = post_instance.get_all_posts(limit, last_id)
+            # convert the document cursor to JSON.
+            for post in posts:
+                post_obj = json.dumps(post, default=json_util.default)
+                post_item = json.loads(post_obj)
+                all_posts.append(post_item)
+
+            return all_posts
 
 
-class DeletePost(Resource):
+class DeleteSinglePost(Resource):
     """Deletes a document matching provided _oid."""
     @jwt_required
     def post(self):
