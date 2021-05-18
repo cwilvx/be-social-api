@@ -42,10 +42,9 @@ rest.add_resource(auth.views.GetUser, "/auth/profile")
 rest.add_resource(auth.views.GetUSerById, "/auth/user")
 
 # mapping the posts endpoints
-rest.add_resource(api.views.AllPosts, "/")
+rest.add_resource(api.views.GetPosts, "/")
 rest.add_resource(api.views.AddNewPost, "/posts/new")
-rest.add_resource(api.views.SinglePost, "/posts/single")
-rest.add_resource(api.views.DeletePost, "/posts/delete")
+rest.add_resource(api.views.DeleteSinglePost, "/posts/delete")
 rest.add_resource(api.views.SearchPosts, "/posts/search")
 
 
