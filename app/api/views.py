@@ -1,3 +1,4 @@
+import datetime
 import json
 import sys
 
@@ -53,6 +54,7 @@ class AddNewPost(Resource):
         # define document schema
         new_post_data = {
             "user": current_user["user_id"],
+            "date": datetime.datetime.now(),
             "post_body": data["post_body"],
             "tags": data["tags"],
         }
@@ -83,7 +85,9 @@ class GetPosts(Resource):
         :returns: all_posts: A list of all the documents matching the query parameters.
         :rtype: da
         """
+        # check for request parameters
         post_id = request.args.get("post_id")
+        # get a single post by id
         if post_id:
             post = post_instance.get_post_by_id(post_id)
 
@@ -95,12 +99,15 @@ class GetPosts(Resource):
                 post_item = json.loads(post_obj)
 
                 return post_item
+        # get all the posts
         else:
             all_posts = []
 
+            # get the request parameters
             last_id = request.args.get("last_id")
             limit = request.args.get("limit")
 
+            # provide a default limit
             if limit is None:
                 limit = 50
 
@@ -143,7 +150,6 @@ class DeleteSinglePost(Resource):
                     except:
                         return {"msg": "An exception occurred"}, 500
                 else:
-
                     return {"msg": "Permission denied"}, 403
             else:
                 return {"msg": "post_id is required!"}
