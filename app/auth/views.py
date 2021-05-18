@@ -2,6 +2,7 @@ import datetime
 import json
 
 from bson import json_util
+from flask import request
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
@@ -22,6 +23,7 @@ user_parser.add_argument('password', help='This field is required', required=Tru
 
 class TokenRefresh(Resource):
     """Generates a new access token."""
+
     @staticmethod
     def post():
         """
@@ -37,6 +39,7 @@ class TokenRefresh(Resource):
 
 class UserRegistration(Resource):
     """Add a new document to the database."""
+
     @staticmethod
     def post():
         """
@@ -73,6 +76,7 @@ class UserRegistration(Resource):
 
 class UserLogin(Resource):
     """Generate an access token for a user upon password confirmation."""
+
     @staticmethod
     def post():
         """
@@ -111,14 +115,25 @@ class UserLogin(Resource):
             return {'msg': 'Wrong credentials'}, 401
 
 
-class GetCurrentUser(Resource):
+class GetUser(Resource):
     """Gets the current user identity from a JWT access token"""
     @jwt_required
-    def post(self):
-        """
-        Performs magic to a JWT access token using get_jwt_identity() and returns the user details.
-        :return:
-        :rtype:
-        """
-        current_user = get_jwt_identity()
-        return current_user
+    def get(self):
+        user_id = request.args.get("user_id")
+
+        if user_id is not None:
+            if user_id is None:
+                return {"msg": "This field is required"}
+
+            user = user_instance.get_user_by_id(user_id)
+            user_obj = json.dumps(user, default=json_util.default)
+            user_item = json.loads(user_obj)
+
+            return user_item
+
+        else:
+
+            current_user = get_jwt_identity()
+            print(current_user)
+            return current_user
+
