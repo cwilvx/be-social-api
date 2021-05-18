@@ -1,0 +1,299 @@
+{
+	"info": {
+		"_postman_id": "78cb8059-aa7c-4f1a-949a-3a1a18a6bef3",
+		"name": "Be social local development",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Signup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"username =  pm.response.json().username;",
+									"",
+									"",
+									"if(username){",
+									"    pm.environment.set(\"credentials\", username);",
+									"    console.log(\"username && password set to: \" + username)",
+									"    console.log(\"proceeding to login\")",
+									"    postman.setNextRequest(\"Signup\");",
+									"    //this stuff is not working",
+									"}",
+									"else {",
+									"    console.log(\"username already exist!\")",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\":\"cwilvx8\",\n    \"password\":\"cwilvx8\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-auth-url}}/signup",
+							"host": [
+								"{{base-auth-url}}"
+							],
+							"path": [
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"token =  pm.response.json().access_token;",
+									"",
+									"if(token){",
+									"    console.log(\"obtained bearer token\");",
+									"    pm.environment.set(\"bearer-token\", token);",
+									"    console.log(\"Logged in! 😁\");",
+									"}",
+									"else {",
+									"    console.log(\"Something awful happened ! 😐\")",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"{{credentials}}\",\n    \"password\": \"{{credentials}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-auth-url}}/login",
+							"host": [
+								"{{base-auth-url}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get current  user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base-auth-url}}/profile",
+							"host": [
+								"{{base-auth-url}}"
+							],
+							"path": [
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user by id",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base-auth-url}}/user?user_id=60a245bdef6cea555ed33759",
+							"host": [
+								"{{base-auth-url}}"
+							],
+							"path": [
+								"user"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "60a245bdef6cea555ed33759"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Posts",
+			"item": [
+				{
+					"name": "Add post",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"post_body\": \"Join the DevOps Webinar and learn how DevOps helps to shorten the systems development life cycle while delivering software releases frequently, in close alignment with business objectives in a faster, better, and cost-efficient way. \",\r\n    \"tags\": [\"DevOps\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-posts-url}}/new",
+							"host": [
+								"{{base-posts-url}}"
+							],
+							"path": [
+								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All posts",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer <Access-Token>"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{home}}?limit=1&last_id=60a245c8ef6cea555ed3375a",
+							"host": [
+								"{{home}}"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "1"
+								},
+								{
+									"key": "last_id",
+									"value": "60a245c8ef6cea555ed3375a"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Single post",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base-posts-url}}/single",
+							"host": [
+								"{{base-posts-url}}"
+							],
+							"path": [
+								"single"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "GET Single post",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{home}}/?post_id=60a245c8ef6cea555ed3375a",
+									"host": [
+										"{{home}}"
+									],
+									"path": [
+										""
+									],
+									"query": [
+										{
+											"key": "post_id",
+											"value": "60a245c8ef6cea555ed3375a"
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "{\n    \"_id\": {\n        \"$oid\": \"60a245c8ef6cea555ed3375a\"\n    },\n    \"user\": \"60a245bdef6cea555ed33759\",\n    \"post_body\": \"Join the DevOps Webinar and learn how DevOps helps to shorten the systems development life cycle while delivering software releases frequently, in close alignment with business objectives in a faster, better, and cost-efficient way. \",\n    \"tags\": [\n        \"DevOps\"\n    ]\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{bearer-token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
