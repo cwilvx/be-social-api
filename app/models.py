@@ -81,6 +81,18 @@ class Users(Mongo):
         user = self.db.find_one({"username": username})
         return user
 
+    def get_user_by_id(self, user_id):
+        """
+        Returns a single document matching the provided _id in the users database.
+
+        :param user_id: The id of the document to retrieve.
+        :type user_id: str
+        :return: user: A cursor to a single document.
+        :rtype: cursor
+        """
+        user = self.db.find_one({"_id": ObjectId(user_id)})
+        return user
+
 
 class Posts(Mongo):
     """Contains all the methods related with posts management."""

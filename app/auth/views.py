@@ -117,23 +117,34 @@ class UserLogin(Resource):
 
 class GetUser(Resource):
     """Gets the current user identity from a JWT access token"""
+
     @jwt_required
     def get(self):
+        """
+        Returns the details of the owner of the JWT token in the Auth token.
+
+        :return: current_user: The details of the current user.
+        :rtype: json
+        """
+        current_user = get_jwt_identity()
+        return current_user
+
+
+class GetUSerById(Resource):
+    """Returns a single user details."""
+
+    def get(self):
+        """
+        Returns the details of a single user.
+
+        :return: user_item: The json document containing the details of a single user.
+        :rtype: json
+        """
+        # get user_id from query parameters
         user_id = request.args.get("user_id")
+        # convert the MongoDb cursor to JSON
+        user = user_instance.get_user_by_id(user_id)
+        user_obj = json.dumps(user, default=json_util.default)
+        user_item = json.loads(user_obj)
 
-        if user_id is not None:
-            if user_id is None:
-                return {"msg": "This field is required"}
-
-            user = user_instance.get_user_by_id(user_id)
-            user_obj = json.dumps(user, default=json_util.default)
-            user_item = json.loads(user_obj)
-
-            return user_item
-
-        else:
-
-            current_user = get_jwt_identity()
-            print(current_user)
-            return current_user
-
+        return user_item
