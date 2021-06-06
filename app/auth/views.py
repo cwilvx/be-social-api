@@ -20,7 +20,6 @@ user_parser = reqparse.RequestParser()
 user_parser.add_argument('username', help='This field is required', required=True)
 user_parser.add_argument('password', help='This field is required', required=True)
 
-
 class TokenRefresh(Resource):
     """Generates a new access token."""
 

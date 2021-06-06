@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, app
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
@@ -7,7 +7,7 @@ from config import config_options
 from . import api
 from . import auth
 
-rest = Api()
+rest = Api(catch_all_404s=True)
 jwt = JWTManager()
 
 
@@ -38,8 +38,9 @@ def create_app(config_name):
 rest.add_resource(auth.views.UserRegistration, "/auth/signup")
 rest.add_resource(auth.views.UserLogin, "/auth/login")
 rest.add_resource(auth.views.TokenRefresh, "/auth/token/refresh")
-rest.add_resource(auth.views.GetUser, "/auth/profile")
-rest.add_resource(auth.views.GetUSerById, "/auth/<string:user_id>")
+
+rest.add_resource(auth.views.GetUser, "/user/current")
+rest.add_resource(auth.views.GetUSerById, "/user/<string:user_id>")
 
 # mapping the posts endpoints
 rest.add_resource(api.views.GetPosts, "/")
@@ -51,3 +52,4 @@ rest.add_resource(api.views.SearchPosts, "/posts/search")
 @jwt.user_identity_loader
 def user_identity_lookup(user):
     return user
+
