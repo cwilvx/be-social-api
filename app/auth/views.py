@@ -133,15 +133,13 @@ class GetUser(Resource):
 class GetUSerById(Resource):
     """Returns a single user details."""
 
-    def get(self):
+    def get(self, user_id):
         """
         Returns the details of a single user.
 
         :return: user_item: The json document containing the details of a single user.
         :rtype: json
         """
-        # get user_id from query parameters
-        user_id = request.args.get("user_id")
         # convert the MongoDb cursor to JSON
         user = user_instance.get_user_by_id(user_id)
         user_obj = json.dumps(user, default=json_util.default)

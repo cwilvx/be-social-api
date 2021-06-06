@@ -39,7 +39,7 @@ rest.add_resource(auth.views.UserRegistration, "/auth/signup")
 rest.add_resource(auth.views.UserLogin, "/auth/login")
 rest.add_resource(auth.views.TokenRefresh, "/auth/token/refresh")
 rest.add_resource(auth.views.GetUser, "/auth/profile")
-rest.add_resource(auth.views.GetUSerById, "/auth/user")
+rest.add_resource(auth.views.GetUSerById, "/auth/<string:user_id>")
 
 # mapping the posts endpoints
 rest.add_resource(api.views.GetPosts, "/")
